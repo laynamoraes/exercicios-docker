@@ -1,0 +1,17 @@
+FROM node:18-alpine
+
+# Define o diretório de trabalho dentro do container
+WORKDIR /usr/src/app
+
+# Copia e instala apenas as dependências
+COPY api/package*.json ./
+RUN npm install --omit=dev
+
+# Copia o código (será substituído pelo volume em DEV)
+COPY api/src ./src
+
+# Porta que o container expõe
+EXPOSE 3000 
+
+# Comando de inicialização
+CMD [ "npm", "start" ]

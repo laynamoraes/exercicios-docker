@@ -1,0 +1,17 @@
+services:
+  db:
+    environment:
+      POSTGRES_DB: prod_db
+      
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner 
+
+    volumes:
+      - /usr/src/app/node_modules
+      
+    environment:
+      DB_NAME: prod_db
+      NODE_ENV: production 

@@ -1,0 +1,41 @@
+services:
+
+  db:
+    image: postgres:15-alpine
+    restart: always 
+    
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+      
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      
+  # Serviço de API Node.js
+  api:
+    build:
+      context: .
+      # 1. Ajuste: O Dockerfile está na raiz do contexto
+      dockerfile: Dockerfile 
+      
+    ports:
+      - "3000:3000"
+      
+    environment:
+      DB_HOST: db 
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+      
+    # 2. Ajuste: Monta a raiz do projeto (onde está index.js) no container
+    volumes:
+      # - .:/usr/src/app
+      - /usr/src/app/node_modules # Garante que node_modules seja persistido internamente
+      
+    depends_on:
+      db:
+        condition: service_started
+        
+volumes:
+  postgres_data:
